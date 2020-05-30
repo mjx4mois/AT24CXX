@@ -5,17 +5,17 @@
      Function		: EXAMPLE_AT24CXX
      Create Date	: 2017/04/29
 ---------------------------------------------------------------------- */
-#ifndef __AT24CXX_EXAMPLE__
-#define __AT24CXX_EXAMPLE__
 
 #include <mega32a.h>
 #include <stdio.h>
 #include <delay.h>
 #include <math.h>
 #include <i2c.h>
-#include "alcd.h"
-#include "SENSOR_AT24CXX.h"
-#include "Porting_Layer.h"
+#include <alcd.h>
+#include <datatype_Layer.h>
+#include <swi2c_Layer.h>
+#include <SENSOR_AT24CXX.h>
+
 
 void  EXAMPLE_AT24CXX(void);
 
@@ -23,30 +23,28 @@ void  EXAMPLE_AT24CXX(void);
 void  EXAMPLE_AT24CXX(void)
 {
 
-		CHAR8S check_flag_AT24CXX =0;
-              CHAR8U AT_24CXX_DATA;
-	       CHAR8U cont_at24cxx_w_data[24]={0};
-	       CHAR8U cont_at24cxx_r_data[24]={0},count_temp=0;
-		CHAR8U eeprom_id =0;
+	CHAR8S check_flag_AT24CXX =0;
+	CHAR8U AT_24CXX_DATA;
+	CHAR8U cont_at24cxx_w_data[24]={0};
+	CHAR8U cont_at24cxx_r_data[24]={0},count_temp=0;
+	CHAR8U eeprom_id =0;
 
-
-		/********* very important **********		*/
-		/*Continue Read & Write					*/
-		/*AT24C01 AT24C02  max 8 byte!!			*/
-		/*AT24C04 AT24C08 AT24C16  max 16 byte!!	*/
-		/*AT24C32 AT24C64  max 24 byte!!			*/
-		/********** very important ***********/
-		CHAR8U cnt_rw_max = 8;
+	/********* Very Important ******************/
+	/*		Continue Read & Write				*/
+	/*AT24C01 AT24C02  max 8 byte!!			*/
+	/*AT24C04 AT24C08 AT24C16  max 16 byte!!	*/
+	/*AT24C32 AT24C64  max 24 byte!!			*/
+	/********* Very Important ******************/
+	CHAR8U cnt_rw_max = 8;
 		
+	/* set eeprom data address */
+	INT16U 	eeprom_data_address = 10;
+	/* set continue read/write address */
+	INT16U	cnt_eeprom_data_address = 20;
 
-		/* set eeprom data address */
-		INT16U 	eeprom_data_address = 500;
-		/* set continue read/write address */
-		INT16U	cnt_eeprom_data_address = 550;
 		
 		printf("-------------------- EEPROM AT24CXX --------------------\r\n");
                /* EEPROM AT24CXX */
-
 
 		/* display EEPROM ID */
 		lcd_gotoxy(0,0);
@@ -126,7 +124,9 @@ void  EXAMPLE_AT24CXX(void)
 			printf("slave address or register address error!!\r\n");
 		}
 
-
+   		delay_ms(20);	/* tiny delay */
+        
+        
 		/* Check the data */
 		/* Read EEPROM data */	   
 		check_flag_AT24CXX = EEPROM_READ_1_BYTE(eeprom_data_address,&AT_24CXX_DATA);
@@ -150,12 +150,12 @@ void  EXAMPLE_AT24CXX(void)
 			printf("test data cont_at24cxx_w_data[%d]=0x%X\r\n",count_temp,cont_at24cxx_w_data[count_temp]);
 		}
 
-		/********* very important **********		*/
-		/*Continue Read & Write					*/
+		/********* Very Important ******************/
+		/*		Continue Read & Write				*/
 		/*AT24C01 AT24C02  max 8 byte!!			*/
 		/*AT24C04 AT24C08 AT24C16  max 16 byte!!	*/
 		/*AT24C32 AT24C64  max 24 byte!!			*/
-		/********** very important ***********/
+		/********* Very Important ******************/
 
 		/* Continue Write EEPROM data */	
 		check_flag_AT24CXX = EEPROM_WRITE_N_BYTE(cnt_eeprom_data_address,cnt_rw_max-1,&cont_at24cxx_w_data[0]);
@@ -164,7 +164,7 @@ void  EXAMPLE_AT24CXX(void)
 			printf("Continue write error \r\n");
 		}
 		
-		delay_ms(20);	/* tiny delay */
+		delay_ms(50);	/* tiny delay */
 
 		/* Continue Read EEPROM data */	
 		check_flag_AT24CXX = EEPROM_READ_N_BYTE(cnt_eeprom_data_address,cnt_rw_max-1,&cont_at24cxx_r_data[0]);
@@ -188,4 +188,4 @@ void  EXAMPLE_AT24CXX(void)
 		while(1); /* stop here */
 			
 }
-#endif		//#ifndef __AT24CXX_EXAMPLE__
+
