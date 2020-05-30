@@ -126,7 +126,9 @@ void  EXAMPLE_AT24CXX(void)
 			printf("slave address or register address error!!\r\n");
 		}
 
-
+   		delay_ms(20);	/* tiny delay */
+        
+        
 		/* Check the data */
 		/* Read EEPROM data */	   
 		check_flag_AT24CXX = EEPROM_READ_1_BYTE(eeprom_data_address,&AT_24CXX_DATA);
@@ -164,7 +166,7 @@ void  EXAMPLE_AT24CXX(void)
 			printf("Continue write error \r\n");
 		}
 		
-		delay_ms(20);	/* tiny delay */
+		delay_ms(50);	/* tiny delay */
 
 		/* Continue Read EEPROM data */	
 		check_flag_AT24CXX = EEPROM_READ_N_BYTE(cnt_eeprom_data_address,cnt_rw_max-1,&cont_at24cxx_r_data[0]);
